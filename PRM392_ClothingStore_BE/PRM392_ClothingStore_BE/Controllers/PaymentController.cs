@@ -1,46 +1,57 @@
 ﻿using BLL.DTOs;
 using BLL.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-[Route("api/[controller]")]
-[ApiController]
-public class PaymentController : ControllerBase
+namespace PRM392_ClothingStore_BE.Controllers
 {
-    private readonly IPaymentService _service;
-
-    public PaymentController(IPaymentService service) => _service = service;
-
-    [HttpGet("{id}")]
-    public async Task<ActionResult<PaymentDTO>> GetById(int id) =>
-        Ok(await _service.GetPaymentByIdAsync(id));
-
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<PaymentDTO>>> GetAll() =>
-        Ok(await _service.GetAllPaymentsAsync());
-
-    [HttpGet("user/{userId}")]
-    public async Task<ActionResult<IEnumerable<PaymentDTO>>> GetByUserId(int userId) =>
-        Ok(await _service.GetPaymentsByUserIdAsync(userId));
-
-    [HttpPost]
-    public async Task<IActionResult> Add([FromBody] PaymentDTO dto)
+    [Route("api/[controller]")]
+    [ApiController]
+    public class PaymentController : ControllerBase
     {
-        await _service.AddPaymentAsync(dto);
-        return Ok();
-    }
+        private readonly IPaymentService _paymentService;
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, [FromBody] PaymentDTO dto)
-    {
-        if (id != dto.Id) return BadRequest();
-        await _service.UpdatePaymentAsync(dto);
-        return NoContent();
-    }
+        public PaymentController(IPaymentService paymentService)
+        {
+            _paymentService = paymentService;
+        }
 
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(int id)
-    {
-        await _service.DeletePaymentAsync(id);
-        return NoContent();
+        [HttpGet("{id}")]
+        public async Task<ActionResult<PaymentDTO>> GetById(int id)
+        {
+            var payment = await _paymentService.GetByIdAsync(id);
+            if (payment == null) return NotFound();
+            return Ok(payment);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<PaymentDTO>>> GetAll()
+        {
+            var payments = await _paymentService.GetAllAsync();
+            return Ok(payments);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Add(PaymentDTO PaymentDTO)
+        {
+            await _paymentService.AddAsync(PaymentDTO);
+            return CreatedAtAction(nameof(GetById), new { id = PaymentDTO.Id }, PaymentDTO);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult> Update(int id, PaymentDTO PaymentDTO)
+        {
+            if (id != PaymentDTO.Id) return BadRequest();
+            await _paymentService.UpdateAsync(PaymentDTO);
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            await _paymentService.DeleteAsync(id);
+            return NoContent();
+        }
     }
 }

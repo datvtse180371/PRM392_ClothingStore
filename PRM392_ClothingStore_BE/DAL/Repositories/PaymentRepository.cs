@@ -1,43 +1,50 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DAL.Models;
+﻿using DAL.Models;
 using DAL.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace DAL.Repositories
 {
     public class PaymentRepository : IPaymentRepository
     {
-        public Task AddPaymentAsync(Payment payment)
+        private readonly Prm392ClothingStoreDbContext _context;
+
+        public PaymentRepository(Prm392ClothingStoreDbContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
         }
 
-        public Task DeletePaymentAsync(int id)
+        public async Task<Payment> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.Payments.FindAsync(id);
         }
 
-        public Task<IEnumerable<Payment>> GetAllPaymentsAsync()
+        public async Task<IEnumerable<Payment>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Payments.ToListAsync();
         }
 
-        public Task<Payment> GetPaymentByIdAsync(int id)
+        public async Task AddAsync(Payment payment)
         {
-            throw new NotImplementedException();
+            await _context.Payments.AddAsync(payment);
+            await _context.SaveChangesAsync();
         }
 
-        public Task<IEnumerable<Payment>> GetPaymentsByUserIdAsync(int userId)
+        public async Task UpdateAsync(Payment payment)
         {
-            throw new NotImplementedException();
+            _context.Payments.Update(payment);
+            await _context.SaveChangesAsync();
         }
 
-        public Task UpdatePaymentAsync(Payment payment)
+        public async Task DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            var payment = await _context.Payments.FindAsync(id);
+            if (payment != null)
+            {
+                _context.Payments.Remove(payment);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

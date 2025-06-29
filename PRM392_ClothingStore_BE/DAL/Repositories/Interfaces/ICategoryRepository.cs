@@ -1,21 +1,15 @@
-﻿using System;
+﻿using DAL.Models;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using DAL.Models;
 
 namespace DAL.Repositories.Interfaces
 {
     public interface ICategoryRepository
     {
-        Task<Category> GetCategoryByIdAsync(int id);
-        Task<IEnumerable<Category>> GetAllCategoriesAsync();
-        Task AddCategoryAsync(Category category);
-        Task UpdateCategoryAsync(Category category);
-        Task DeleteCategoryAsync(int id);
-
-        // Optional: Get category by name
-        Task<Category> GetCategoryByNameAsync(string name);
+        Task<Category> GetByIdAsync(int id);
+        Task<IEnumerable<Category>> GetAllAsync();
+        Task AddAsync(Category category);
+        Task UpdateAsync(Category category);
+        Task DeleteAsync(int id);
     }
 }

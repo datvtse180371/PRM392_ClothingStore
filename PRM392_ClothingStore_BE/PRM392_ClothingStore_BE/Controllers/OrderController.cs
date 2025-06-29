@@ -1,46 +1,57 @@
 ﻿using BLL.DTOs;
 using BLL.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-[Route("api/[controller]")]
-[ApiController]
-public class OrderController : ControllerBase
+namespace PRM392_ClothingStore_BE.Controllers
 {
-    private readonly IOrderService _service;
-
-    public OrderController(IOrderService service) => _service = service;
-
-    [HttpGet("{id}")]
-    public async Task<ActionResult<OrderDTO>> GetById(int id) =>
-        Ok(await _service.GetOrderByIdAsync(id));
-
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<OrderDTO>>> GetAll() =>
-        Ok(await _service.GetAllOrdersAsync());
-
-    [HttpGet("user/{userId}")]
-    public async Task<ActionResult<IEnumerable<OrderDTO>>> GetByUserId(int userId) =>
-        Ok(await _service.GetOrdersByUserIdAsync(userId));
-
-    [HttpPost]
-    public async Task<IActionResult> Add([FromBody] OrderDTO dto)
+    [Route("api/[controller]")]
+    [ApiController]
+    public class OrderController : ControllerBase
     {
-        await _service.AddOrderAsync(dto);
-        return Ok();
-    }
+        private readonly IOrderService _orderService;
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, [FromBody] OrderDTO dto)
-    {
-        if (id != dto.Id) return BadRequest();
-        await _service.UpdateOrderAsync(dto);
-        return NoContent();
-    }
+        public OrderController(IOrderService orderService)
+        {
+            _orderService = orderService;
+        }
 
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(int id)
-    {
-        await _service.DeleteOrderAsync(id);
-        return NoContent();
+        [HttpGet("{id}")]
+        public async Task<ActionResult<OrderDTO>> GetById(int id)
+        {
+            var order = await _orderService.GetByIdAsync(id);
+            if (order == null) return NotFound();
+            return Ok(order);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<OrderDTO>>> GetAll()
+        {
+            var orders = await _orderService.GetAllAsync();
+            return Ok(orders);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Add(OrderDTO OrderDTO)
+        {
+            await _orderService.AddAsync(OrderDTO);
+            return CreatedAtAction(nameof(GetById), new { id = OrderDTO.Id }, OrderDTO);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult> Update(int id, OrderDTO OrderDTO)
+        {
+            if (id != OrderDTO.Id) return BadRequest();
+            await _orderService.UpdateAsync(OrderDTO);
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            await _orderService.DeleteAsync(id);
+            return NoContent();
+        }
     }
 }

@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
-namespace BLL.DTOs
+namespace BLL.DTOs;
+
+public class CategoryDTO
 {
-    public class CategoryDTO
-    {
-        public int Id { get; set; }
-    }
+    public int Id { get; set; }
+    public string Name { get; set; } = null!;
+    public string? Description { get; set; }
+    public virtual ICollection<ProductDTO> Products { get; set; } = new List<ProductDTO>();
 }

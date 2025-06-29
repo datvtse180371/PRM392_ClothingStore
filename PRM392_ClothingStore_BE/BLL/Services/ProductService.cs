@@ -1,38 +1,51 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using AutoMapper;
 using BLL.DTOs;
 using BLL.Services.Interfaces;
+using DAL.Models;
+using DAL.Repositories.Interfaces;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace BLL.Services
 {
     public class ProductService : IProductService
     {
-        public Task AddProductAsync(ProductDTO productDto)
+        private readonly IProductRepository _productRepository;
+        private readonly IMapper _mapper;
+
+        public ProductService(IProductRepository productRepository, IMapper mapper)
         {
-            throw new NotImplementedException();
+            _productRepository = productRepository;
+            _mapper = mapper;
         }
 
-        public Task DeleteProductAsync(int id)
+        public async Task<ProductDTO> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var product = await _productRepository.GetByIdAsync(id);
+            return _mapper.Map<ProductDTO>(product);
         }
 
-        public Task<IEnumerable<ProductDTO>> GetAllProductsAsync()
+        public async Task<IEnumerable<ProductDTO>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            var products = await _productRepository.GetAllAsync();
+            return _mapper.Map<IEnumerable<ProductDTO>>(products);
         }
 
-        public Task<ProductDTO> GetProductByIdAsync(int id)
+        public async Task AddAsync(ProductDTO ProductDTO)
         {
-            throw new NotImplementedException();
+            var product = _mapper.Map<Product>(ProductDTO);
+            await _productRepository.AddAsync(product);
         }
 
-        public Task UpdateProductAsync(ProductDTO productDto)
+        public async Task UpdateAsync(ProductDTO ProductDTO)
         {
-            throw new NotImplementedException();
+            var product = _mapper.Map<Product>(ProductDTO);
+            await _productRepository.UpdateAsync(product);
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            await _productRepository.DeleteAsync(id);
         }
     }
 }

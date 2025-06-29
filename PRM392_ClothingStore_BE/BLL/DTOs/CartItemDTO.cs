@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace BLL.DTOs
+namespace BLL.DTOs;
+
+public class CartItemDTO
 {
-    public class CartItemDTO
-    {
-        public int Id { get; set; }
-    }
+    public int Id { get; set; }
+    public int? UserId { get; set; }
+    public DateTime? AddedAt { get; set; }
+    public int Quantity { get; set; }
+    public int? ProductId { get; set; }
 }

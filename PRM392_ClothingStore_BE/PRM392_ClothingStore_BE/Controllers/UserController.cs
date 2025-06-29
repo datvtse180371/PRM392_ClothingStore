@@ -1,42 +1,57 @@
 ﻿using BLL.DTOs;
 using BLL.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-[Route("api/[controller]")]
-[ApiController]
-public class UserController : ControllerBase
+namespace PRM392_ClothingStore_BE.Controllers
 {
-    private readonly IUserService _service;
-
-    public UserController(IUserService service) => _service = service;
-
-    [HttpGet("{id}")]
-    public async Task<ActionResult<UserDTO>> GetById(int id) =>
-        Ok(await _service.GetUserByIdAsync(id));
-
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<UserDTO>>> GetAll() =>
-        Ok(await _service.GetAllUsersAsync());
-
-    [HttpPost]
-    public async Task<IActionResult> Add([FromBody] UserDTO dto)
+    [Route("api/[controller]")]
+    [ApiController]
+    public class UserController : ControllerBase
     {
-        await _service.AddUserAsync(dto);
-        return Ok();
-    }
+        private readonly IUserService _userService;
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, [FromBody] UserDTO dto)
-    {
-        if (id != dto.Id) return BadRequest();
-        await _service.UpdateUserAsync(dto);
-        return NoContent();
-    }
+        public UserController(IUserService userService)
+        {
+            _userService = userService;
+        }
 
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(int id)
-    {
-        await _service.DeleteUserAsync(id);
-        return NoContent();
+        [HttpGet("{id}")]
+        public async Task<ActionResult<UserDTO>> GetById(int id)
+        {
+            var user = await _userService.GetByIdAsync(id);
+            if (user == null) return NotFound();
+            return Ok(user);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<UserDTO>>> GetAll()
+        {
+            var users = await _userService.GetAllAsync();
+            return Ok(users);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Add(UserDTO UserDTO)
+        {
+            await _userService.AddAsync(UserDTO);
+            return CreatedAtAction(nameof(GetById), new { id = UserDTO.Id }, UserDTO);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult> Update(int id, UserDTO UserDTO)
+        {
+            if (id != UserDTO.Id) return BadRequest();
+            await _userService.UpdateAsync(UserDTO);
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            await _userService.DeleteAsync(id);
+            return NoContent();
+        }
     }
 }

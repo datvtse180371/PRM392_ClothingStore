@@ -1,43 +1,51 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using AutoMapper;
 using BLL.DTOs;
 using BLL.Services.Interfaces;
+using DAL.Models;
+using DAL.Repositories.Interfaces;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace BLL.Services
 {
     public class PaymentService : IPaymentService
     {
-        public Task AddPaymentAsync(PaymentDTO paymentDto)
+        private readonly IPaymentRepository _paymentRepository;
+        private readonly IMapper _mapper;
+
+        public PaymentService(IPaymentRepository paymentRepository, IMapper mapper)
         {
-            throw new NotImplementedException();
+            _paymentRepository = paymentRepository;
+            _mapper = mapper;
         }
 
-        public Task DeletePaymentAsync(int id)
+        public async Task<PaymentDTO> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var payment = await _paymentRepository.GetByIdAsync(id);
+            return _mapper.Map<PaymentDTO>(payment);
         }
 
-        public Task<IEnumerable<PaymentDTO>> GetAllPaymentsAsync()
+        public async Task<IEnumerable<PaymentDTO>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            var payments = await _paymentRepository.GetAllAsync();
+            return _mapper.Map<IEnumerable<PaymentDTO>>(payments);
         }
 
-        public Task<PaymentDTO> GetPaymentByIdAsync(int id)
+        public async Task AddAsync(PaymentDTO PaymentDTO)
         {
-            throw new NotImplementedException();
+            var payment = _mapper.Map<Payment>(PaymentDTO);
+            await _paymentRepository.AddAsync(payment);
         }
 
-        public Task<IEnumerable<PaymentDTO>> GetPaymentsByUserIdAsync(int userId)
+        public async Task UpdateAsync(PaymentDTO PaymentDTO)
         {
-            throw new NotImplementedException();
+            var payment = _mapper.Map<Payment>(PaymentDTO);
+            await _paymentRepository.UpdateAsync(payment);
         }
 
-        public Task UpdatePaymentAsync(PaymentDTO paymentDto)
+        public async Task DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            await _paymentRepository.DeleteAsync(id);
         }
     }
 }

@@ -1,42 +1,57 @@
 ﻿using BLL.DTOs;
 using BLL.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-[Route("api/[controller]")]
-[ApiController]
-public class ProductController : ControllerBase
+namespace PRM392_ClothingStore_BE.Controllers
 {
-    private readonly IProductService _service;
-
-    public ProductController(IProductService service) => _service = service;
-
-    [HttpGet("{id}")]
-    public async Task<ActionResult<ProductDTO>> GetById(int id) =>
-        Ok(await _service.GetProductByIdAsync(id));
-
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<ProductDTO>>> GetAll() =>
-        Ok(await _service.GetAllProductsAsync());
-
-    [HttpPost]
-    public async Task<IActionResult> Add([FromBody] ProductDTO dto)
+    [Route("api/[controller]")]
+    [ApiController]
+    public class ProductController : ControllerBase
     {
-        await _service.AddProductAsync(dto);
-        return Ok();
-    }
+        private readonly IProductService _productService;
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, [FromBody] ProductDTO dto)
-    {
-        if (id != dto.Id) return BadRequest();
-        await _service.UpdateProductAsync(dto);
-        return NoContent();
-    }
+        public ProductController(IProductService productService)
+        {
+            _productService = productService;
+        }
 
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(int id)
-    {
-        await _service.DeleteProductAsync(id);
-        return NoContent();
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ProductDTO>> GetById(int id)
+        {
+            var product = await _productService.GetByIdAsync(id);
+            if (product == null) return NotFound();
+            return Ok(product);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<ProductDTO>>> GetAll()
+        {
+            var products = await _productService.GetAllAsync();
+            return Ok(products);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Add(ProductDTO ProductDTO)
+        {
+            await _productService.AddAsync(ProductDTO);
+            return CreatedAtAction(nameof(GetById), new { id = ProductDTO.Id }, ProductDTO);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult> Update(int id, ProductDTO ProductDTO)
+        {
+            if (id != ProductDTO.Id) return BadRequest();
+            await _productService.UpdateAsync(ProductDTO);
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            await _productService.DeleteAsync(id);
+            return NoContent();
+        }
     }
 }

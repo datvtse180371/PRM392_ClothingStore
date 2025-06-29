@@ -1,43 +1,50 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DAL.Models;
+﻿using DAL.Models;
 using DAL.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace DAL.Repositories
 {
     public class OrderRepository : IOrderRepository
     {
-        public Task AddOrderAsync(Order order)
+        private readonly Prm392ClothingStoreDbContext _context;
+
+        public OrderRepository(Prm392ClothingStoreDbContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
         }
 
-        public Task DeleteOrderAsync(int id)
+        public async Task<Order> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.Orders.FindAsync(id);
         }
 
-        public Task<IEnumerable<Order>> GetAllOrdersAsync()
+        public async Task<IEnumerable<Order>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Orders.ToListAsync();
         }
 
-        public Task<Order> GetOrderByIdAsync(int id)
+        public async Task AddAsync(Order order)
         {
-            throw new NotImplementedException();
+            await _context.Orders.AddAsync(order);
+            await _context.SaveChangesAsync();
         }
 
-        public Task<IEnumerable<Order>> GetOrdersByUserIdAsync(int userId)
+        public async Task UpdateAsync(Order order)
         {
-            throw new NotImplementedException();
+            _context.Orders.Update(order);
+            await _context.SaveChangesAsync();
         }
 
-        public Task UpdateOrderAsync(Order order)
+        public async Task DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            var order = await _context.Orders.FindAsync(id);
+            if (order != null)
+            {
+                _context.Orders.Remove(order);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

@@ -1,43 +1,51 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using AutoMapper;
 using BLL.DTOs;
 using BLL.Services.Interfaces;
+using DAL.Models;
+using DAL.Repositories.Interfaces;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace BLL.Services
 {
     public class OrderService : IOrderService
     {
-        public Task AddOrderAsync(OrderDTO orderDto)
+        private readonly IOrderRepository _orderRepository;
+        private readonly IMapper _mapper;
+
+        public OrderService(IOrderRepository orderRepository, IMapper mapper)
         {
-            throw new NotImplementedException();
+            _orderRepository = orderRepository;
+            _mapper = mapper;
         }
 
-        public Task DeleteOrderAsync(int id)
+        public async Task<OrderDTO> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var order = await _orderRepository.GetByIdAsync(id);
+            return _mapper.Map<OrderDTO>(order);
         }
 
-        public Task<IEnumerable<OrderDTO>> GetAllOrdersAsync()
+        public async Task<IEnumerable<OrderDTO>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            var orders = await _orderRepository.GetAllAsync();
+            return _mapper.Map<IEnumerable<OrderDTO>>(orders);
         }
 
-        public Task<OrderDTO> GetOrderByIdAsync(int id)
+        public async Task AddAsync(OrderDTO OrderDTO)
         {
-            throw new NotImplementedException();
+            var order = _mapper.Map<Order>(OrderDTO);
+            await _orderRepository.AddAsync(order);
         }
 
-        public Task<IEnumerable<OrderDTO>> GetOrdersByUserIdAsync(int userId)
+        public async Task UpdateAsync(OrderDTO OrderDTO)
         {
-            throw new NotImplementedException();
+            var order = _mapper.Map<Order>(OrderDTO);
+            await _orderRepository.UpdateAsync(order);
         }
 
-        public Task UpdateOrderAsync(OrderDTO orderDto)
+        public async Task DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            await _orderRepository.DeleteAsync(id);
         }
     }
 }

@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using BLL.DTOs;
+﻿using BLL.DTOs;
 using BLL.Services.Interfaces;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace PRM392_ClothingStore_BE.Controllers
 {
@@ -12,45 +12,45 @@ namespace PRM392_ClothingStore_BE.Controllers
     {
         private readonly ICategoryService _categoryService;
 
-        public CategoryController(ICategoryService categoryService) => _categoryService = categoryService;
+        public CategoryController(ICategoryService categoryService)
+        {
+            _categoryService = categoryService;
+        }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<CategoryDTO>> GetById(int id)
         {
-            var category = await _categoryService.GetCategoryByIdAsync(id);
-            return category == null ? NotFound() : Ok(category);
+            var category = await _categoryService.GetByIdAsync(id);
+            if (category == null) return NotFound();
+            return Ok(category);
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CategoryDTO>>> GetAll() =>
-            Ok(await _categoryService.GetAllCategoriesAsync());
-
-        [HttpGet("name/{name}")]
-        public async Task<ActionResult<CategoryDTO>> GetByName(string name)
+        public async Task<ActionResult<IEnumerable<CategoryDTO>>> GetAll()
         {
-            var category = await _categoryService.GetCategoryByNameAsync(name);
-            return category == null ? NotFound() : Ok(category);
+            var categories = await _categoryService.GetAllAsync();
+            return Ok(categories);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add([FromBody] CategoryDTO dto)
+        public async Task<ActionResult> Add(CategoryDTO CategoryDTO)
         {
-            await _categoryService.AddCategoryAsync(dto);
-            return Ok();
+            await _categoryService.AddAsync(CategoryDTO);
+            return CreatedAtAction(nameof(GetById), new { id = CategoryDTO.Id }, CategoryDTO);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] CategoryDTO dto)
+        public async Task<ActionResult> Update(int id, CategoryDTO CategoryDTO)
         {
-            if (id != dto.Id) return BadRequest();
-            await _categoryService.UpdateCategoryAsync(dto);
+            if (id != CategoryDTO.Id) return BadRequest();
+            await _categoryService.UpdateAsync(CategoryDTO);
             return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            await _categoryService.DeleteCategoryAsync(id);
+            await _categoryService.DeleteAsync(id);
             return NoContent();
         }
     }

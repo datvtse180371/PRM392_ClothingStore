@@ -1,38 +1,51 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using AutoMapper;
 using BLL.DTOs;
 using BLL.Services.Interfaces;
+using DAL.Models;
+using DAL.Repositories.Interfaces;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace BLL.Services
 {
     public class UserService : IUserService
     {
-        public Task AddUserAsync(UserDTO userDto)
+        private readonly IUserRepository _userRepository;
+        private readonly IMapper _mapper;
+
+        public UserService(IUserRepository userRepository, IMapper mapper)
         {
-            throw new NotImplementedException();
+            _userRepository = userRepository;
+            _mapper = mapper;
         }
 
-        public Task DeleteUserAsync(int id)
+        public async Task<UserDTO> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var user = await _userRepository.GetByIdAsync(id);
+            return _mapper.Map<UserDTO>(user);
         }
 
-        public Task<IEnumerable<UserDTO>> GetAllUsersAsync()
+        public async Task<IEnumerable<UserDTO>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            var users = await _userRepository.GetAllAsync();
+            return _mapper.Map<IEnumerable<UserDTO>>(users);
         }
 
-        public Task<UserDTO> GetUserByIdAsync(int id)
+        public async Task AddAsync(UserDTO UserDTO)
         {
-            throw new NotImplementedException();
+            var user = _mapper.Map<User>(UserDTO);
+            await _userRepository.AddAsync(user);
         }
 
-        public Task UpdateUserAsync(UserDTO userDto)
+        public async Task UpdateAsync(UserDTO UserDTO)
         {
-            throw new NotImplementedException();
+            var user = _mapper.Map<User>(UserDTO);
+            await _userRepository.UpdateAsync(user);
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            await _userRepository.DeleteAsync(id);
         }
     }
 }

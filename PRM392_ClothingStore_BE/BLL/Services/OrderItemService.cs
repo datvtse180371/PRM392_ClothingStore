@@ -1,43 +1,51 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using AutoMapper;
 using BLL.DTOs;
 using BLL.Services.Interfaces;
+using DAL.Models;
+using DAL.Repositories.Interfaces;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace BLL.Services
 {
     public class OrderItemService : IOrderItemService
     {
-        public Task AddOrderItemAsync(OrderItemDTO orderItemDto)
+        private readonly IOrderItemRepository _orderItemRepository;
+        private readonly IMapper _mapper;
+
+        public OrderItemService(IOrderItemRepository orderItemRepository, IMapper mapper)
         {
-            throw new NotImplementedException();
+            _orderItemRepository = orderItemRepository;
+            _mapper = mapper;
         }
 
-        public Task DeleteOrderItemAsync(int id)
+        public async Task<OrderItemDTO> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var orderItem = await _orderItemRepository.GetByIdAsync(id);
+            return _mapper.Map<OrderItemDTO>(orderItem);
         }
 
-        public Task<IEnumerable<OrderItemDTO>> GetAllOrderItemsAsync()
+        public async Task<IEnumerable<OrderItemDTO>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            var orderItems = await _orderItemRepository.GetAllAsync();
+            return _mapper.Map<IEnumerable<OrderItemDTO>>(orderItems);
         }
 
-        public Task<OrderItemDTO> GetOrderItemByIdAsync(int id)
+        public async Task AddAsync(OrderItemDTO OrderItemDTO)
         {
-            throw new NotImplementedException();
+            var orderItem = _mapper.Map<OrderItem>(OrderItemDTO);
+            await _orderItemRepository.AddAsync(orderItem);
         }
 
-        public Task<IEnumerable<OrderItemDTO>> GetOrderItemsByOrderIdAsync(int orderId)
+        public async Task UpdateAsync(OrderItemDTO OrderItemDTO)
         {
-            throw new NotImplementedException();
+            var orderItem = _mapper.Map<OrderItem>(OrderItemDTO);
+            await _orderItemRepository.UpdateAsync(orderItem);
         }
 
-        public Task UpdateOrderItemAsync(OrderItemDTO orderItemDto)
+        public async Task DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            await _orderItemRepository.DeleteAsync(id);
         }
     }
 }

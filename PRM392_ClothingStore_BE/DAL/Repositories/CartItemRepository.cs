@@ -1,48 +1,50 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DAL.Models;
+﻿using DAL.Models;
 using DAL.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace DAL.Repositories
 {
     public class CartItemRepository : ICartItemRepository
     {
-        public Task AddCartItemAsync(CartItem cartItem)
+        private readonly Prm392ClothingStoreDbContext _context;
+
+        public CartItemRepository(Prm392ClothingStoreDbContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
         }
 
-        public Task ClearCartByUserIdAsync(int userId)
+        public async Task<CartItem> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.CartItems.FindAsync(id);
         }
 
-        public Task DeleteCartItemAsync(int id)
+        public async Task<IEnumerable<CartItem>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _context.CartItems.ToListAsync();
         }
 
-        public Task<CartItem> GetCartItemByIdAsync(int id)
+        public async Task AddAsync(CartItem cartItem)
         {
-            throw new NotImplementedException();
+            await _context.CartItems.AddAsync(cartItem);
+            await _context.SaveChangesAsync();
         }
 
-        public Task<CartItem> GetCartItemByUserAndProductAsync(int userId, int productId)
+        public async Task UpdateAsync(CartItem cartItem)
         {
-            throw new NotImplementedException();
+            _context.CartItems.Update(cartItem);
+            await _context.SaveChangesAsync();
         }
 
-        public Task<IEnumerable<CartItem>> GetCartItemsByUserIdAsync(int userId)
+        public async Task DeleteAsync(int id)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task UpdateCartItemAsync(CartItem cartItem)
-        {
-            throw new NotImplementedException();
+            var cartItem = await _context.CartItems.FindAsync(id);
+            if (cartItem != null)
+            {
+                _context.CartItems.Remove(cartItem);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

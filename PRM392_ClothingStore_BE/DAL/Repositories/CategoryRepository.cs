@@ -1,43 +1,50 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DAL.Models;
+﻿using DAL.Models;
 using DAL.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace DAL.Repositories
 {
     public class CategoryRepository : ICategoryRepository
     {
-        public Task AddCategoryAsync(Category category)
+        private readonly Prm392ClothingStoreDbContext _context;
+
+        public CategoryRepository(Prm392ClothingStoreDbContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
         }
 
-        public Task DeleteCategoryAsync(int id)
+        public async Task<Category> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.Categories.FindAsync(id);
         }
 
-        public Task<IEnumerable<Category>> GetAllCategoriesAsync()
+        public async Task<IEnumerable<Category>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Categories.ToListAsync();
         }
 
-        public Task<Category> GetCategoryByIdAsync(int id)
+        public async Task AddAsync(Category category)
         {
-            throw new NotImplementedException();
+            await _context.Categories.AddAsync(category);
+            await _context.SaveChangesAsync();
         }
 
-        public Task<Category> GetCategoryByNameAsync(string name)
+        public async Task UpdateAsync(Category category)
         {
-            throw new NotImplementedException();
+            _context.Categories.Update(category);
+            await _context.SaveChangesAsync();
         }
 
-        public Task UpdateCategoryAsync(Category category)
+        public async Task DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            var category = await _context.Categories.FindAsync(id);
+            if (category != null)
+            {
+                _context.Categories.Remove(category);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

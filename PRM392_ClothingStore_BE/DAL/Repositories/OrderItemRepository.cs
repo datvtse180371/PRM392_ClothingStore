@@ -1,43 +1,50 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DAL.Models;
+﻿using DAL.Models;
 using DAL.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace DAL.Repositories
 {
     public class OrderItemRepository : IOrderItemRepository
     {
-        public Task AddOrderItemAsync(OrderItem orderItem)
+        private readonly Prm392ClothingStoreDbContext _context;
+
+        public OrderItemRepository(Prm392ClothingStoreDbContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
         }
 
-        public Task DeleteOrderItemAsync(int id)
+        public async Task<OrderItem> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.OrderItems.FindAsync(id);
         }
 
-        public Task<IEnumerable<OrderItem>> GetAllOrderItemsAsync()
+        public async Task<IEnumerable<OrderItem>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _context.OrderItems.ToListAsync();
         }
 
-        public Task<OrderItem> GetOrderItemByIdAsync(int id)
+        public async Task AddAsync(OrderItem orderItem)
         {
-            throw new NotImplementedException();
+            await _context.OrderItems.AddAsync(orderItem);
+            await _context.SaveChangesAsync();
         }
 
-        public Task<IEnumerable<OrderItem>> GetOrderItemsByOrderIdAsync(int orderId)
+        public async Task UpdateAsync(OrderItem orderItem)
         {
-            throw new NotImplementedException();
+            _context.OrderItems.Update(orderItem);
+            await _context.SaveChangesAsync();
         }
 
-        public Task UpdateOrderItemAsync(OrderItem orderItem)
+        public async Task DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            var orderItem = await _context.OrderItems.FindAsync(id);
+            if (orderItem != null)
+            {
+                _context.OrderItems.Remove(orderItem);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

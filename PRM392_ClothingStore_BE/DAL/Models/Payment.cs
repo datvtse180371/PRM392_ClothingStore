@@ -1,12 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace DAL.Models
+namespace DAL.Models;
+
+public partial class Payment
 {
-    public class Payment
-    {
-    }
+    public int Id { get; set; }
+
+    public int? OrderId { get; set; }
+
+    public string PaymentMethod { get; set; } = null!;
+
+    public DateTime? PaymentDate { get; set; }
+
+    public string Status { get; set; } = null!;
+
+    public virtual Order? Order { get; set; }
 }

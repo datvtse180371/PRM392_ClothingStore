@@ -1,48 +1,51 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using AutoMapper;
 using BLL.DTOs;
 using BLL.Services.Interfaces;
+using DAL.Models;
+using DAL.Repositories.Interfaces;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace BLL.Services
 {
     public class CartItemService : ICartItemService
     {
-        public Task AddCartItemAsync(CartItemDTO cartItemDto)
+        private readonly ICartItemRepository _cartItemRepository;
+        private readonly IMapper _mapper;
+
+        public CartItemService(ICartItemRepository cartItemRepository, IMapper mapper)
         {
-            throw new NotImplementedException();
+            _cartItemRepository = cartItemRepository;
+            _mapper = mapper;
         }
 
-        public Task ClearCartByUserIdAsync(int userId)
+        public async Task<CartItemDTO> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var cartItem = await _cartItemRepository.GetByIdAsync(id);
+            return _mapper.Map<CartItemDTO>(cartItem);
         }
 
-        public Task DeleteCartItemAsync(int id)
+        public async Task<IEnumerable<CartItemDTO>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            var cartItems = await _cartItemRepository.GetAllAsync();
+            return _mapper.Map<IEnumerable<CartItemDTO>>(cartItems);
         }
 
-        public Task<CartItemDTO> GetCartItemByIdAsync(int id)
+        public async Task AddAsync(CartItemDTO CartItemDTO)
         {
-            throw new NotImplementedException();
+            var cartItem = _mapper.Map<CartItem>(CartItemDTO);
+            await _cartItemRepository.AddAsync(cartItem);
         }
 
-        public Task<CartItemDTO> GetCartItemByUserAndProductAsync(int userId, int productId)
+        public async Task UpdateAsync(CartItemDTO CartItemDTO)
         {
-            throw new NotImplementedException();
+            var cartItem = _mapper.Map<CartItem>(CartItemDTO);
+            await _cartItemRepository.UpdateAsync(cartItem);
         }
 
-        public Task<IEnumerable<CartItemDTO>> GetCartItemsByUserIdAsync(int userId)
+        public async Task DeleteAsync(int id)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task UpdateCartItemAsync(CartItemDTO cartItemDto)
-        {
-            throw new NotImplementedException();
+            await _cartItemRepository.DeleteAsync(id);
         }
     }
 }

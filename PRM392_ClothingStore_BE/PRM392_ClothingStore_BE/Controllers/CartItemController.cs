@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BLL.DTOs;
+using BLL.Services.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using BLL.DTOs;
-using BLL.Services.Interfaces;
 
 namespace PRM392_ClothingStore_BE.Controllers
 {
@@ -17,69 +17,41 @@ namespace PRM392_ClothingStore_BE.Controllers
             _cartItemService = cartItemService;
         }
 
-        // GET: api/CartItem/{id}
         [HttpGet("{id}")]
-        public async Task<ActionResult<CartItemDTO>> GetCartItemById(int id)
+        public async Task<ActionResult<CartItemDTO>> GetById(int id)
         {
-            var cartItem = await _cartItemService.GetCartItemByIdAsync(id);
-            if (cartItem == null)
-                return NotFound();
-
+            var cartItem = await _cartItemService.GetByIdAsync(id);
+            if (cartItem == null) return NotFound();
             return Ok(cartItem);
         }
 
-        // GET: api/CartItem/user/{userId}
-        [HttpGet("user/{userId}")]
-        public async Task<ActionResult<IEnumerable<CartItemDTO>>> GetCartItemsByUserId(int userId)
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<CartItemDTO>>> GetAll()
         {
-            var items = await _cartItemService.GetCartItemsByUserIdAsync(userId);
-            return Ok(items);
+            var cartItems = await _cartItemService.GetAllAsync();
+            return Ok(cartItems);
         }
 
-        // POST: api/CartItem
         [HttpPost]
-        public async Task<ActionResult> AddCartItem([FromBody] CartItemDTO cartItemDto)
+        public async Task<ActionResult> Add(CartItemDTO CartItemDTO)
         {
-            await _cartItemService.AddCartItemAsync(cartItemDto);
-            return CreatedAtAction(nameof(GetCartItemById), new { id = cartItemDto.Id }, cartItemDto);
+            await _cartItemService.AddAsync(CartItemDTO);
+            return CreatedAtAction(nameof(GetById), new { id = CartItemDTO.Id }, CartItemDTO);
         }
 
-        // PUT: api/CartItem/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCartItem(int id, [FromBody] CartItemDTO cartItemDto)
+        public async Task<ActionResult> Update(int id, CartItemDTO CartItemDTO)
         {
-            if (id != cartItemDto.Id)
-                return BadRequest("ID mismatch");
-
-            await _cartItemService.UpdateCartItemAsync(cartItemDto);
+            if (id != CartItemDTO.Id) return BadRequest();
+            await _cartItemService.UpdateAsync(CartItemDTO);
             return NoContent();
         }
 
-        // DELETE: api/CartItem/{id}
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCartItem(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            await _cartItemService.DeleteCartItemAsync(id);
+            await _cartItemService.DeleteAsync(id);
             return NoContent();
-        }
-
-        // DELETE: api/CartItem/user/{userId}/clear
-        [HttpDelete("user/{userId}/clear")]
-        public async Task<IActionResult> ClearCartByUserId(int userId)
-        {
-            await _cartItemService.ClearCartByUserIdAsync(userId);
-            return NoContent();
-        }
-
-        // GET: api/CartItem/user/{userId}/product/{productId}
-        [HttpGet("user/{userId}/product/{productId}")]
-        public async Task<ActionResult<CartItemDTO>> GetCartItemByUserAndProduct(int userId, int productId)
-        {
-            var cartItem = await _cartItemService.GetCartItemByUserAndProductAsync(userId, productId);
-            if (cartItem == null)
-                return NotFound();
-
-            return Ok(cartItem);
         }
     }
 }
