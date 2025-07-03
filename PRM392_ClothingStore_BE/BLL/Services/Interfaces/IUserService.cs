@@ -11,5 +11,6 @@ namespace BLL.Services.Interfaces
         Task AddAsync(UserDTO userDto);
         Task UpdateAsync(UserDTO userDto);
         Task DeleteAsync(int id);
+        Task<(string Token, UserDTO User)> LoginAsync(LoginDTO loginDto);
     }
 }

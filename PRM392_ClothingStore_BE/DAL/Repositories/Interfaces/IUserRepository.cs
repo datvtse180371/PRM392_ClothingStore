@@ -11,5 +11,6 @@ namespace DAL.Repositories.Interfaces
         Task AddAsync(User user);
         Task UpdateAsync(User user);
         Task DeleteAsync(int id);
+        Task<User> GetByEmailAsync(string email); // Add method to get user by email
     }
 }
