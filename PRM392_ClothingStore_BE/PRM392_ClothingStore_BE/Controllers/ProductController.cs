@@ -53,5 +53,12 @@ namespace PRM392_ClothingStore_BE.Controllers
             await _productService.DeleteAsync(id);
             return NoContent();
         }
+        [HttpGet("all")]
+        public async Task<ActionResult<IEnumerable<ProductDTO>>> GetAll(string? search = null, int? categoryId = null)
+        {
+            var products = await _productService.GetAllAsync(search, categoryId);
+            return Ok(products);
+        }
+
     }
 }

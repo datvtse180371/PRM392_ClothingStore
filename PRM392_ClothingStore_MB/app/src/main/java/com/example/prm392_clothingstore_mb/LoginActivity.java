@@ -7,8 +7,8 @@ import android.text.TextUtils;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.prm392_clothingstore_mb.api.ApiService;
-import com.example.prm392_clothingstore_mb.api.RetrofitClient;
+import com.example.prm392_clothingstore_mb.api.User.ApiService;
+import com.example.prm392_clothingstore_mb.api.User.RetrofitClient;
 import com.example.prm392_clothingstore_mb.model.LoginRequest;
 import com.example.prm392_clothingstore_mb.model.LoginResponse;
 import com.google.android.material.button.MaterialButton;

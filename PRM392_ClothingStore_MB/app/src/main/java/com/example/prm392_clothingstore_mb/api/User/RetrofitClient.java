@@ -1,4 +1,4 @@
-package com.example.prm392_clothingstore_mb.api;
+package com.example.prm392_clothingstore_mb.api.User;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;

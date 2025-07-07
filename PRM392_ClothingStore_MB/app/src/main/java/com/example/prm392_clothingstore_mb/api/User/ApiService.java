@@ -1,4 +1,4 @@
-package com.example.prm392_clothingstore_mb.api;
+package com.example.prm392_clothingstore_mb.api.User;
 
 import com.example.prm392_clothingstore_mb.model.LoginRequest;
 import com.example.prm392_clothingstore_mb.model.LoginResponse;

@@ -11,5 +11,6 @@ namespace BLL.Services.Interfaces
         Task AddAsync(ProductDTO productDto);
         Task UpdateAsync(ProductDTO productDto);
         Task DeleteAsync(int id);
+        Task<IEnumerable<ProductDTO>> GetAllAsync(string? search = null, int? categoryId = null);
     }
 }

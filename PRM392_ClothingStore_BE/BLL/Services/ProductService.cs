@@ -47,5 +47,27 @@ namespace BLL.Services
         {
             await _productRepository.DeleteAsync(id);
         }
+        public async Task<IEnumerable<ProductDTO>> GetAllAsync(string? search = null, int? categoryId = null)
+        {
+            var products = await _productRepository.GetAllAsync();
+
+            // Search by product name (case-insensitive)
+            if (!string.IsNullOrEmpty(search))
+            {
+                products = products.Where(p => p.Name.Contains(search, StringComparison.OrdinalIgnoreCase));
+            }
+
+            // Filter by CategoryId if provided
+            if (categoryId.HasValue)
+            {
+                products = products.Where(p => p.Category == categoryId.Value);
+            }
+
+            // Sort by CategoryId
+            products = products.OrderBy(p => p.Category);
+
+            return _mapper.Map<IEnumerable<ProductDTO>>(products);
+        }
+
     }
 }
