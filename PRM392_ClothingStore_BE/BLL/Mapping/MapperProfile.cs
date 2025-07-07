@@ -9,6 +9,8 @@ namespace BLL.Mapping
         public MapperProfile()
         {
             CreateMap<CartItem, CartItemDTO>().ReverseMap();
+            CreateMap<CartItem, CartItemWithProductDTO>()
+                .ForMember(dest => dest.Product, opt => opt.MapFrom(src => src.Product));
             CreateMap<Category, CategoryDTO>().ReverseMap();
             CreateMap<Order, OrderDTO>().ReverseMap();
             CreateMap<OrderItem, OrderItemDTO>().ReverseMap();

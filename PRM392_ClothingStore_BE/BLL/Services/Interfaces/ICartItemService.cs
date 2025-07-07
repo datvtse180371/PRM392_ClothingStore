@@ -8,6 +8,8 @@ namespace BLL.Services.Interfaces
     {
         Task<CartItemDTO> GetByIdAsync(int id);
         Task<IEnumerable<CartItemDTO>> GetAllAsync();
+        Task<IEnumerable<CartItemDTO>> GetByUserIdAsync(int userId);
+        Task<CartNotificationDTO> GetCartNotificationAsync(int userId);
         Task AddAsync(CartItemDTO cartItemDto);
         Task UpdateAsync(CartItemDTO cartItemDto);
         Task DeleteAsync(int id);

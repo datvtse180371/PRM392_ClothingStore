@@ -2,6 +2,7 @@
 using DAL.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace DAL.Repositories
@@ -23,6 +24,21 @@ namespace DAL.Repositories
         public async Task<IEnumerable<CartItem>> GetAllAsync()
         {
             return await _context.CartItems.ToListAsync();
+        }
+
+        public async Task<IEnumerable<CartItem>> GetByUserIdAsync(int userId)
+        {
+            return await _context.CartItems
+                .Include(c => c.Product)
+                .Where(c => c.UserId == userId)
+                .ToListAsync();
+        }
+
+        public async Task<int> GetCartItemCountByUserIdAsync(int userId)
+        {
+            return await _context.CartItems
+                .Where(c => c.UserId == userId)
+                .SumAsync(c => c.Quantity);
         }
 
         public async Task AddAsync(CartItem cartItem)

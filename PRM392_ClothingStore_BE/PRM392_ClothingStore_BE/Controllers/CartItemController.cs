@@ -1,7 +1,9 @@
 ﻿using BLL.DTOs;
 using BLL.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace PRM392_ClothingStore_BE.Controllers
@@ -52,6 +54,34 @@ namespace PRM392_ClothingStore_BE.Controllers
         {
             await _cartItemService.DeleteAsync(id);
             return NoContent();
+        }
+
+        [HttpGet("user/{userId}")]
+        public async Task<ActionResult<IEnumerable<CartItemDTO>>> GetByUserId(int userId)
+        {
+            var cartItems = await _cartItemService.GetByUserIdAsync(userId);
+            return Ok(cartItems);
+        }
+
+        [HttpGet("notification/{userId}")]
+        public async Task<ActionResult<CartNotificationDTO>> GetCartNotification(int userId)
+        {
+            var notification = await _cartItemService.GetCartNotificationAsync(userId);
+            return Ok(notification);
+        }
+
+        [HttpGet("notification")]
+        [Authorize]
+        public async Task<ActionResult<CartNotificationDTO>> GetMyCartNotification()
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
+            {
+                return Unauthorized("Invalid user token");
+            }
+
+            var notification = await _cartItemService.GetCartNotificationAsync(userId);
+            return Ok(notification);
         }
     }
 }
