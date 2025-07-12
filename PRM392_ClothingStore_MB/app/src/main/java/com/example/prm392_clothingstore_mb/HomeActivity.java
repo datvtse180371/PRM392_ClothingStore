@@ -2,6 +2,7 @@ package com.example.prm392_clothingstore_mb;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
@@ -25,8 +26,13 @@ import com.example.prm392_clothingstore_mb.api.Category.CategoryRepository;
 import com.example.prm392_clothingstore_mb.api.Category.CategoryService;
 import com.example.prm392_clothingstore_mb.api.Product.ProductRepository;
 import com.example.prm392_clothingstore_mb.api.Product.ProductService;
+import com.example.prm392_clothingstore_mb.api.Cart.CartRepository;
+import com.example.prm392_clothingstore_mb.api.Cart.CartService;
 import com.example.prm392_clothingstore_mb.model.CategoryDTO;
 import com.example.prm392_clothingstore_mb.model.ProductDTO;
+import com.example.prm392_clothingstore_mb.model.CartNotificationDTO;
+import com.example.prm392_clothingstore_mb.utils.NotificationHelper;
+import com.example.prm392_clothingstore_mb.utils.PermissionHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -102,6 +108,9 @@ public class HomeActivity extends AppCompatActivity {
         String userName = prefs.getString("user_name", "User");
         TextView welcomeText = findViewById(R.id.welcomeText);
         welcomeText.setText("Welcome to Clothing Store, " + userName + "!");
+
+        // Request notification permission and check cart notification when app opens
+        requestNotificationPermissionAndCheckCart();
     }
 
     private void fetchProducts(String search, Integer categoryId) {
@@ -180,7 +189,84 @@ public class HomeActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
             return true;
+        } else if (item.getItemId() == R.id.action_map) {
+            Intent intent = new Intent(this, MapActivity.class);
+            startActivity(intent);
+            return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void requestNotificationPermissionAndCheckCart() {
+        if (PermissionHelper.hasNotificationPermission(this)) {
+            // Permission already granted, check cart notification
+            checkCartNotification();
+        } else {
+            // Request permission
+            PermissionHelper.requestNotificationPermission(this);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (PermissionHelper.isNotificationPermissionRequestCode(requestCode)) {
+            if (grantResults.length > 0 && grantResults[0] == getPackageManager().PERMISSION_GRANTED) {
+                // Permission granted, check cart notification
+                checkCartNotification();
+            } else {
+                // Permission denied, still check cart but won't show notification
+                checkCartNotification();
+                showToast("Notification permission denied. You won't receive cart notifications.");
+            }
+        }
+    }
+
+    private void checkCartNotification() {
+        SharedPreferences prefs = getSharedPreferences("ClothingStorePrefs", MODE_PRIVATE);
+        int userId = prefs.getInt("user_id", -1);
+
+        if (userId == -1) {
+            // User not logged in properly
+            return;
+        }
+
+        CartService cartService = CartRepository.getCartService();
+        Call<CartNotificationDTO> call = cartService.getCartNotification(userId);
+
+        call.enqueue(new Callback<CartNotificationDTO>() {
+            @Override
+            public void onResponse(Call<CartNotificationDTO> call, Response<CartNotificationDTO> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    CartNotificationDTO notification = response.body();
+
+                    if (notification.isHasItems()) {
+                        // Show notification if cart has items
+                        showCartNotification(notification);
+
+                        // Also show a toast message
+                        showToast(notification.getMessage());
+                    }
+                } else {
+                    Log.e("CartNotification", "Failed to get cart notification: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CartNotificationDTO> call, Throwable t) {
+                Log.e("CartNotification", "Error getting cart notification: " + t.getMessage());
+            }
+        });
+    }
+
+    private void showCartNotification(CartNotificationDTO notification) {
+        NotificationHelper notificationHelper = new NotificationHelper(this);
+
+        String title = "Items in Your Cart";
+        String message = notification.getMessage();
+        int totalItems = notification.getTotalItems();
+
+        notificationHelper.showCartNotification(title, message, totalItems);
     }
 }

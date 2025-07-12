@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">PRM392_ClothingStore_MB</string>
+
+    <!-- Map Activity Strings -->
+    <string name="store_location_title">Store Location</string>
+    <string name="store_name">Clothing Store </string>
+    <string name="store_address">Nhà văn hoá sinh viên</string>
+    <string name="store_hours">Open: Mon-Sun 10:00 AM - 10:00 PM</string>
+    <string name="get_directions">Get Directions</string>
+    <string name="location_permission_granted">Location permission granted</string>
+    <string name="location_permission_denied">Location permission denied. You can still view the store location.</string>
+    <string name="directions_error">Unable to open directions. Please try again.</string>
 </resources>
