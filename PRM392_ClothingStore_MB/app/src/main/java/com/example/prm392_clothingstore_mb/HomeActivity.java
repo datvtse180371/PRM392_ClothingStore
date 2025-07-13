@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,6 +46,7 @@ public class HomeActivity extends AppCompatActivity {
     private List<CategoryDTO> categoryList = new ArrayList<>();
     private ArrayAdapter<String> categoryAdapter;
     private Integer selectedCategoryId = null;
+    private Button btnCart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +59,7 @@ public class HomeActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerView);
         searchView = findViewById(R.id.searchView);
         categorySpinner = findViewById(R.id.categorySpinner);
+        btnCart = findViewById(R.id.btnCart);
 
         fetchCategories();
 
@@ -80,6 +83,14 @@ public class HomeActivity extends AppCompatActivity {
             startActivity(intent);
         });
         recyclerView.setAdapter(adapter);
+
+        // CART
+        btnCart.setOnClickListener(v -> {
+            Intent intent = new Intent(HomeActivity.this, CartActivity.class);
+            startActivity(intent);
+        });
+        //
+
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         fetchProducts(null, null);

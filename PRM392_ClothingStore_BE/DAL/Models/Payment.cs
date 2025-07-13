@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace DAL.Models;
 
@@ -11,6 +12,7 @@ public partial class Payment
 
     public string PaymentMethod { get; set; } = null!;
 
+    [JsonPropertyName("paymentDate")]
     public DateTime? PaymentDate { get; set; }
 
     public string Status { get; set; } = null!;

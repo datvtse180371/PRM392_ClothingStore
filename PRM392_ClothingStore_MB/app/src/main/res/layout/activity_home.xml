@@ -18,7 +18,23 @@
         app:titleTextColor="@android:color/white"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- Cart Button in Toolbar -->
+        <Button
+            android:id="@+id/btnCart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginEnd="16dp"
+            android:text="🛒 Cart"
+            android:textColor="@android:color/white"
+            android:backgroundTint="#FF5722"
+            android:padding="8dp"
+            android:textSize="12sp" />
+
+    </androidx.appcompat.widget.Toolbar>
+
 
 
     <!-- Welcome Text -->
