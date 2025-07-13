@@ -70,6 +70,17 @@
             android:textColor="#757575"
             android:layout_marginBottom="10dp"/>
 
+        <!-- Stock -->
+        <TextView
+            android:id="@+id/detailProductStock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stock: 0 available"
+            android:textSize="16sp"
+            android:textColor="#4CAF50"
+            android:textStyle="bold"
+            android:layout_marginBottom="10dp"/>
+
         <!-- Description label -->
         <TextView
             android:layout_width="wrap_content"
@@ -91,9 +102,81 @@
             android:textColor="#444444"
             android:background="#EEEEEE"
             android:padding="10dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="20dp"
             android:layout_marginTop="0dp"
             android:layout_gravity="center_horizontal"/>
+
+        <!-- Quantity Selector -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="20dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Quantity: "
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#222222"
+                android:layout_marginEnd="16dp"/>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/decreaseQuantityButton"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:text="−"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:background="@drawable/quantity_button_background"
+                android:textColor="#FFFFFF"
+                android:layout_marginEnd="8dp"
+                android:gravity="center"
+                android:textAllCaps="false" />
+
+            <TextView
+                android:id="@+id/quantityText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginHorizontal="16dp"
+                android:minWidth="32dp"
+                android:gravity="center"
+                android:textColor="#222222"
+                android:background="#F0F0F0"
+                android:padding="8dp" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/increaseQuantityButton"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:text="+"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:background="@drawable/quantity_button_background"
+                android:textColor="#FFFFFF"
+                android:layout_marginStart="8dp"
+                android:gravity="center"
+                android:textAllCaps="false" />
+
+        </LinearLayout>
+
+        <!-- Add to Cart Button -->
+        <Button
+            android:id="@+id/addToCartButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add to Cart"
+            android:textSize="16sp"
+            android:textColor="@android:color/white"
+            android:background="?attr/colorPrimary"
+            android:padding="16dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="20dp" />
 
     </LinearLayout>
 </ScrollView>

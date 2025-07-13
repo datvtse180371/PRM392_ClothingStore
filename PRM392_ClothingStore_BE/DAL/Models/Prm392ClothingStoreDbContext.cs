@@ -134,6 +134,7 @@ namespace DAL.Models
                 entity.Property(e => e.Name).HasMaxLength(100).IsRequired();
                 entity.Property(e => e.Price).HasColumnType("decimal(10, 2)").IsRequired();
                 entity.Property(e => e.Size).HasMaxLength(50);
+                entity.Property(e => e.Stock).IsRequired().HasDefaultValue(100);
 
                 entity.HasOne(d => d.CategoryNavigation).WithMany(p => p.Products)
                     .HasForeignKey(d => d.Category)

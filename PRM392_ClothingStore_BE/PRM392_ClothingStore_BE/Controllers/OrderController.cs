@@ -1,6 +1,7 @@
 ﻿using BLL.DTOs;
 using BLL.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -52,6 +53,20 @@ namespace PRM392_ClothingStore_BE.Controllers
         {
             await _orderService.DeleteAsync(id);
             return NoContent();
+        }
+
+        [HttpGet("user/{userId}")]
+        public async Task<ActionResult<IEnumerable<OrderDTO>>> GetByUserId(int userId)
+        {
+            try
+            {
+                var orders = await _orderService.GetByUserIdAsync(userId);
+                return Ok(orders);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message, stackTrace = ex.StackTrace });
+            }
         }
     }
 }

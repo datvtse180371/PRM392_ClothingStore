@@ -12,6 +12,7 @@ public class ProductDTO implements Serializable {
     private String size;
     private String color;
     private String imageUrl;
+    private int stock;
     private List<CartItemDTO> cartItems;
     private CategoryDTO categoryNavigation;
     private List<OrderItemDTO> orderItems;
@@ -71,6 +72,14 @@ public class ProductDTO implements Serializable {
     }
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public int getStock() {
+        return stock;
+    }
+
+    public void setStock(int stock) {
+        this.stock = stock;
     }
     public CategoryDTO getCategoryNavigation() {
         return categoryNavigation;

@@ -31,6 +31,12 @@ namespace BLL.Services
             return _mapper.Map<IEnumerable<OrderDTO>>(orders);
         }
 
+        public async Task<IEnumerable<OrderDTO>> GetByUserIdAsync(int userId)
+        {
+            var orders = await _orderRepository.GetByUserIdAsync(userId);
+            return _mapper.Map<IEnumerable<OrderDTO>>(orders);
+        }
+
         public async Task AddAsync(OrderDTO OrderDTO)
         {
             var order = _mapper.Map<Order>(OrderDTO);

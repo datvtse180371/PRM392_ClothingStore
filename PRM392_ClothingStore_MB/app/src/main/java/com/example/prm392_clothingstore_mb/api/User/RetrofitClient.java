@@ -1,5 +1,7 @@
 package com.example.prm392_clothingstore_mb.api.User;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -9,9 +11,14 @@ public class RetrofitClient {
 
     public static ApiService getApiService() {
         if (retrofit == null) {
+            // Create Gson with custom date format to handle backend date format
+            Gson gson = new GsonBuilder()
+                    .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS")
+                    .create();
+
             retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create(gson))
                     .build();
         }
         return retrofit.create(ApiService.class);

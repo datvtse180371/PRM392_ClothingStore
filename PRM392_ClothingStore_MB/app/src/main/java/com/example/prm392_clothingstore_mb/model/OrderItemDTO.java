@@ -7,9 +7,11 @@ public class OrderItemDTO {
     private int quantity;
     private double unitPrice;
     private Double subTotal;
+    private ProductDTO product;
+
     public OrderItemDTO() {
     }
-    public OrderItemDTO(int id, Integer orderId, Integer productId, int quantity, double unitPrice, double subTotal) {
+    public OrderItemDTO(int id, Integer orderId, Integer productId, int quantity, double unitPrice, Double subTotal) {
         this.id = id;
         this.orderId = orderId;
         this.productId = productId;
@@ -48,11 +50,18 @@ public class OrderItemDTO {
     public void setUnitPrice(double unitPrice) {
         this.unitPrice = unitPrice;
     }
-    public double getSubTotal() {
+    public Double getSubTotal() {
         return subTotal;
     }
-    public void setSubTotal(double subTotal) {
+    public void setSubTotal(Double subTotal) {
         this.subTotal = subTotal;
     }
 
+    public ProductDTO getProduct() {
+        return product;
+    }
+
+    public void setProduct(ProductDTO product) {
+        this.product = product;
+    }
 }

@@ -10,4 +10,5 @@ public class OrderItemDTO
     public int Quantity { get; set; }
     public decimal UnitPrice { get; set; }
     public decimal? SubTotal { get; set; }
+    public virtual ProductDTO? Product { get; set; }
 }

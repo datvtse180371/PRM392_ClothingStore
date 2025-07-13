@@ -1,7 +1,9 @@
 ﻿using DAL.Models;
 using DAL.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace DAL.Repositories
@@ -23,6 +25,27 @@ namespace DAL.Repositories
         public async Task<IEnumerable<Order>> GetAllAsync()
         {
             return await _context.Orders.ToListAsync();
+        }
+
+        public async Task<IEnumerable<Order>> GetByUserIdAsync(int userId)
+        {
+            try
+            {
+                return await _context.Orders
+                    .Include(o => o.OrderItems)
+                        .ThenInclude(oi => oi.Product)
+                    .Include(o => o.Payments)
+                    .Where(o => o.UserId == userId)
+                    .OrderByDescending(o => o.OrderDate)
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                // Log the exception for debugging
+                Console.WriteLine($"Error in GetByUserIdAsync: {ex.Message}");
+                Console.WriteLine($"Stack trace: {ex.StackTrace}");
+                throw;
+            }
         }
 
         public async Task AddAsync(Order order)

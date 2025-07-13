@@ -83,5 +83,78 @@ namespace PRM392_ClothingStore_BE.Controllers
             var notification = await _cartItemService.GetCartNotificationAsync(userId);
             return Ok(notification);
         }
+
+        [HttpPost("add-to-cart")]
+        public async Task<ActionResult> AddToCart([FromBody] AddToCartRequest request)
+        {
+            try
+            {
+                await _cartItemService.AddToCartAsync(request.UserId, request.ProductId, request.Quantity);
+                return Ok(new { message = "Product added to cart successfully" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpPut("update-quantity/{cartItemId}")]
+        public async Task<ActionResult> UpdateQuantity(int cartItemId, [FromBody] UpdateQuantityRequest request)
+        {
+            try
+            {
+                await _cartItemService.UpdateQuantityAsync(cartItemId, request.Quantity);
+                return Ok(new { message = "Cart item quantity updated successfully" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpDelete("remove-from-cart/{cartItemId}")]
+        public async Task<ActionResult> RemoveFromCart(int cartItemId)
+        {
+            try
+            {
+                await _cartItemService.DeleteAsync(cartItemId);
+                return Ok(new { message = "Product removed from cart successfully" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpPost("checkout/{userId}")]
+        public async Task<ActionResult<OrderDTO>> Checkout(int userId, [FromBody] CheckoutRequest request)
+        {
+            try
+            {
+                var order = await _cartItemService.CheckoutAsync(userId, request.PaymentMethod);
+                return Ok(order);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+    }
+
+    public class AddToCartRequest
+    {
+        public int UserId { get; set; }
+        public int ProductId { get; set; }
+        public int Quantity { get; set; } = 1;
+    }
+
+    public class UpdateQuantityRequest
+    {
+        public int Quantity { get; set; }
+    }
+
+    public class CheckoutRequest
+    {
+        public string PaymentMethod { get; set; } = "Credit Card";
     }
 }

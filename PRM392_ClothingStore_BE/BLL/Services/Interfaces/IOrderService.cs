@@ -8,6 +8,7 @@ namespace BLL.Services.Interfaces
     {
         Task<OrderDTO> GetByIdAsync(int id);
         Task<IEnumerable<OrderDTO>> GetAllAsync();
+        Task<IEnumerable<OrderDTO>> GetByUserIdAsync(int userId);
         Task AddAsync(OrderDTO orderDto);
         Task UpdateAsync(OrderDTO orderDto);
         Task DeleteAsync(int id);

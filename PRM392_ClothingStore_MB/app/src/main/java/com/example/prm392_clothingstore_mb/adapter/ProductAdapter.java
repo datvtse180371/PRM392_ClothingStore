@@ -51,19 +51,32 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     }
 
     static class ProductViewHolder extends RecyclerView.ViewHolder {
-        TextView name, price, category;
+        TextView name, price, category, stock;
 
         ProductViewHolder(View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.productName);
             price = itemView.findViewById(R.id.productPrice);
             category = itemView.findViewById(R.id.productCategory);
+            stock = itemView.findViewById(R.id.productStock);
         }
 
         void bind(final ProductDTO product, final OnProductClickListener listener) {
             name.setText(product.getName());
             price.setText("Price: $" + product.getPrice());
             category.setText("Category: " + product.getCategory());
+            stock.setText("Stock: " + product.getStock());
+
+            // Change stock color based on availability
+            if (product.getStock() <= 0) {
+                stock.setText("Out of Stock");
+                stock.setTextColor(0xFFFF5722); // Red color for out of stock
+            } else if (product.getStock() <= 10) {
+                stock.setTextColor(0xFFFF9800); // Orange color for low stock
+            } else {
+                stock.setTextColor(0xFF4CAF50); // Green color for good stock
+            }
+
             itemView.setOnClickListener(v -> listener.onProductClick(product));
         }
     }

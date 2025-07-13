@@ -13,7 +13,9 @@ namespace BLL.Mapping
                 .ForMember(dest => dest.Product, opt => opt.MapFrom(src => src.Product));
             CreateMap<Category, CategoryDTO>().ReverseMap();
             CreateMap<Order, OrderDTO>().ReverseMap();
-            CreateMap<OrderItem, OrderItemDTO>().ReverseMap();
+            CreateMap<OrderItem, OrderItemDTO>()
+                .ForMember(dest => dest.Product, opt => opt.MapFrom(src => src.Product))
+                .ReverseMap();
             CreateMap<Payment, PaymentDTO>().ReverseMap();
             CreateMap<Product, ProductDTO>().ReverseMap();
             CreateMap<User, UserDTO>().ReverseMap();
